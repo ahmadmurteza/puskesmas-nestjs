@@ -3,10 +3,13 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BoorkmarkModule } from './boorkmark/boorkmark.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { JwtModule } from '@nestjs/jwt/dist';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports:[
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     AuthModule, 
     UserModule, 
     BoorkmarkModule, 

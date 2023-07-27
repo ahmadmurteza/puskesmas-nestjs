@@ -2,11 +2,12 @@ import { Module } from "@nestjs/common";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtModule } from "@nestjs/jwt/dist";
+import { JwtStrategy } from "./strategy";
 
 @Module({
-    imports: [JwtModule.register({ secret: 'hard!to-guess_secret' })],
+    imports: [JwtModule.register({})],
     controllers: [AuthController],
-    providers: [AuthService],
+    providers: [AuthService, JwtStrategy],
 })
 
 export class AuthModule {}

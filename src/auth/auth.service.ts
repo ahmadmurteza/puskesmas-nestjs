@@ -6,10 +6,16 @@ import * as argon from "argon2";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { SigninDto } from "./dto/signin.dto";
 import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { config } from "process";
 
 @Injectable({})
 export class AuthService {
-    constructor(private prisma: PrismaService, private readonly jwtService: JwtService) {}
+    constructor(
+        private prisma: PrismaService, 
+        private readonly jwtService: JwtService, 
+        private config: ConfigService
+    ) {}
 
     async signup(dto: AuthDto) {
         // generate password yang di hash
@@ -25,14 +31,21 @@ export class AuthService {
             });    
 
             delete user.passwordHash;
-            return user;
+            delete user.id;
+            return {
+                status: 201,
+                message: "Successfully Register",
+                data: {
+                    user: user
+                }
+            }
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
                     throw new ForbiddenException('Credentials taken');
                 }
             }
-            return error;
+            return error.message;
         }
     }
     
@@ -52,18 +65,16 @@ export class AuthService {
             throw new ForbiddenException('Password incorrect');
         }
 
-        const payload = {sub: user.id, username: user.fullname};
-        const accessToken = await this.jwtService.signAsync(payload);
+        return this.signToken(user.id, user.email);
+    }
 
-        delete user.passwordHash;
-        return {
-            status: 200,
-            message: "Successfully Login",
-            data: {
-                user: user,
-                jwt: accessToken
-            }
-        }
+    async signToken(userId: number, email: string): Promise<string> {
+        const payload = {sub: userId, email: email};
+        const accessToken = await this.jwtService.signAsync(payload, {
+            expiresIn: '59m',
+            secret: this.config.get('JWT_SECRET')
+        });
+        return accessToken;
     }
     
 }
