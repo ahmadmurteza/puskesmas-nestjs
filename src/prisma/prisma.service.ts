@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient {
-    constructor(config: ConfigService) {
+    constructor(private config: ConfigService) {
         super({
             datasources: {
                 db: {
@@ -12,6 +12,11 @@ export class PrismaService extends PrismaClient {
                 }
             }
         });
+    }
 
+    async cleanDatabase() {
+        if (this.config.get('APP_DEBUG') == 'production') return;
+        const models = Reflect.ownKeys(this).filter((key) => key[0] !== '_');
+        return Promise.all(models.map((modelKey) => this[modelKey].deleteMany()));
     }
 }

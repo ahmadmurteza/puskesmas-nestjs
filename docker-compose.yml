@@ -10,5 +10,15 @@ services:
       - POSTGRES_DB=puskesmas
     networks:
       - puskesmas
+  test-db:
+    image: postgres:15
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=puskesmas
+    networks:
+      - puskesmas
 networks:
   puskesmas:

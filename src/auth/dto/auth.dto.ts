@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { Poli, Role } from "@prisma/client";
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
 
 export class AuthDto {
     @IsEmail()
@@ -8,4 +9,17 @@ export class AuthDto {
     @IsString()
     @IsNotEmpty()
     password: string
+
+    @IsEnum(Role)
+    @IsNotEmpty()
+    role: Role
+
+    @IsString()
+    @IsNotEmpty()
+    fullname: string
+
+    @IsEnum(Poli)
+    @IsNotEmpty()
+    poli: Poli
+
 }

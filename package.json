@@ -11,6 +11,7 @@
     "db:dev:rm": "docker compose rm dev-db -f -s -v",
     "db:dev:up": "docker compose up dev-db -d",
     "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && npm run sleep1s && npm run prisma:migrate:deploy",
+    "test:int": "jest -i --no-cache --watch --config jest-int.json",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -22,7 +23,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --watch --no-cache --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -83,6 +84,10 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+
+    "moduleNameMapper": {
+      "^src/(.*)$":"<rootDir>/$1"
+    },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

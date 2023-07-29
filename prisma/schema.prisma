@@ -11,9 +11,14 @@ datasource db {
 }
 
 enum Role {
-  Doctor 
+  Doctor
   Pharmacist
   Cashier
+}
+
+enum Poli {
+  Umum
+  Gimu
 }
 
 model User {
@@ -24,8 +29,9 @@ model User {
   email         String @unique
   passwordHash  String
 
-  fullname  String?
-  role      Role?
+  fullname  String
+  role      Role
+  poli      Poli
 
   boorkmarks Boorkmark[]
 
@@ -42,7 +48,7 @@ model Boorkmark {
   link        String
 
   userId  Int 
-  user    User @relation(fields: [userId], references: [id])
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("boorkmarks")
 }
